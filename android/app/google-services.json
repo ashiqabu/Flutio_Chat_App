@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "803951137287",
+    "project_id": "flutio-chatapp",
+    "storage_bucket": "flutio-chatapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803951137287:android:17b3e603541704432810a2",
+        "android_client_info": {
+          "package_name": "com.example.sample_project2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsRecfku0jOFCz8ziPEBfNgl-jtDT9PXU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
