@@ -1,65 +1,161 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sample_project2/colors.dart';
 import 'package:sample_project2/common/enums/message_enum.dart';
+import 'package:sample_project2/features/chat/repository/chat_repository.dart';
+import 'package:swipe_to/swipe_to.dart';
 
 import 'display_text_image_gif.dart';
 
-class MyMessageCard extends StatelessWidget {
+class MyMessageCard extends ConsumerWidget {
   final String message;
   final String date;
   final MessageEnum type;
-  const MyMessageCard(
-      {super.key,
-      required this.message,
-      required this.date,
-      required this.type});
+  final VoidCallback onleftSwipe;
+  final String repliedText;
+  final String userName;
+  final MessageEnum repliedMessageType;
+  final bool isSeen;
+  final String receiverId;
+  final String messageId;
+  final bool isGroupchat;
+
+  const MyMessageCard({
+    super.key,
+    required this.message,
+    required this.userName,
+    required this.repliedMessageType,
+    required this.onleftSwipe,
+    required this.repliedText,
+    required this.date,
+    required this.type,
+    required this.isSeen,
+    required this.receiverId,
+    required this.messageId,
+    required this.isGroupchat,
+  });
 
   @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: ConstrainedBox(
-        constraints:
-            BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 45),
-        child: Card(
-          elevation: 8,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          color: Colors.white,
-          margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-          child: Stack(
-            children: [
-              Padding(
-                  padding: type == MessageEnum.text
-                      ? const EdgeInsets.only(
-                          left: 10, right: 30, top: 5, bottom: 20)
-                      : const EdgeInsets.only(
-                          left: 5, right: 5, top: 5, bottom: 25),
-                  child: DisplayTextImageGif(
-                    message: message,
-                    type: type,
-                  )),
-              Positioned(
-                bottom: 4,
-                right: 10,
-                child: Row(
-                  children: [
-                    Text(
-                      date,
-                      style: const TextStyle(fontSize: 13, color: Colors.black),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isReplying = repliedText.isNotEmpty;
+    return SwipeTo(
+      onLeftSwipe: onleftSwipe,
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: ConstrainedBox(
+          constraints:
+              BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 45),
+          child: GestureDetector(
+            onLongPress: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    backgroundColor: Colors.white,
+                    title: const Text(
+                      'Do you want to delete the message?',
+                      style: TextStyle(color: Colors.red),
                     ),
-                    const SizedBox(
-                      width: 5,
+                    content: const Text(
+                      'This action will delete the messages from the chat',
+                      style: TextStyle(color: Colors.black),
                     ),
-                    const Icon(
-                      Icons.done_all,
-                      size: 20,
-                      color: Colors.black,
-                    )
-                  ],
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Cancel'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: const Text('Yes'),
+                        onPressed: () {
+                          ref
+                              .read(chatRepositoryProvider)
+                              .deleteMessagesFromMessageSubCollection(
+                                  recieverUserId: receiverId,
+                                  messageId: messageId,
+                                  isGroupChat: isGroupchat);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            child: Card(
+              elevation: 1,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(0),
                 ),
-              )
-            ],
+              ),
+              color: messageColor,
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+              child: Stack(
+                children: [
+                  Padding(
+                      padding: type == MessageEnum.text
+                          ? const EdgeInsets.only(
+                              left: 20, right: 40, top: 5, bottom: 20)
+                          : const EdgeInsets.only(
+                              left: 5, right: 5, top: 5, bottom: 25),
+                      child: Column(
+                        children: [
+                          if (isReplying) ...[
+                            Text(
+                              userName,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: const BoxDecoration(
+                                  color: senderMessageColor,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5))),
+                              child: DisplayTextImageGif(
+                                message: repliedText,
+                                type: repliedMessageType,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                          DisplayTextImageGif(
+                            message: message,
+                            type: type,
+                          ),
+                        ],
+                      )),
+                  Positioned(
+                    bottom: 4,
+                    right: 10,
+                    child: Row(
+                      children: [
+                        Text(
+                          date,
+                          style:
+                              const TextStyle(fontSize: 8, color: Colors.white),
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Icon(isSeen ? Icons.done_all : Icons.done,
+                            size: 20,
+                            color: isSeen
+                                ? Colors.blue
+                                : const Color.fromARGB(255, 139, 136, 136))
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
           ),
         ),
       ),

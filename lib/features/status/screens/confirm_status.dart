@@ -9,7 +9,10 @@ import '../../../colors.dart';
 class ConfirmStatusScreen extends ConsumerWidget {
   static const String routeName = '/confirm-status-screen';
   final File file;
-  const ConfirmStatusScreen({required this.file, super.key});
+  const ConfirmStatusScreen({
+    Key? key,
+    required this.file,
+  }) : super(key: key);
 
   void addStatus(WidgetRef ref, BuildContext context) {
     ref.read(statusControllerProvider).addStatus(file, context);
@@ -20,15 +23,14 @@ class ConfirmStatusScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: Center(
-          child: AspectRatio(
-        aspectRatio: 9 / 16,
-        child: Image.file(file),
-      )),
+        child: AspectRatio(
+          aspectRatio: 9 / 16,
+          child: Image.file(file),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: tabColor,
-        onPressed: () =>
-          addStatus(ref, context)
-        ,
+        onPressed: () => addStatus(ref, context),
+        backgroundColor: messageColor,
         child: const Icon(
           Icons.done,
           color: Colors.white,

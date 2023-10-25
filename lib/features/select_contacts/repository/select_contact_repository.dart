@@ -51,6 +51,7 @@ class SelectContactRepository {
         showSnackBar(context: context, content: errormessage1);
       }
     } catch (e) {
+      // ignore: use_build_context_synchronously
       showSnackBar(context: context, content: e.toString());
     }
   }

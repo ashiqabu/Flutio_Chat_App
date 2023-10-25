@@ -7,9 +7,12 @@ import '../../../common/widgets/loader.dart';
 import '../../../model/status_model.dart';
 
 class StatusScreen extends StatefulWidget {
-  static const routeName = '/status-screen';
+  static const String routeName = '/status-screen';
   final Status status;
-  const StatusScreen({super.key, required this.status});
+  const StatusScreen({
+    Key? key,
+    required this.status,
+  }) : super(key: key);
 
   @override
   State<StatusScreen> createState() => _StatusScreenState();
@@ -28,7 +31,9 @@ class _StatusScreenState extends State<StatusScreen> {
   void initStoryPageItems() {
     for (int i = 0; i < widget.status.photoUrl.length; i++) {
       storyItems.add(StoryItem.pageImage(
-          url: widget.status.photoUrl[i], controller: controller));
+        url: widget.status.photoUrl[i],
+        controller: controller,
+      ));
     }
   }
 

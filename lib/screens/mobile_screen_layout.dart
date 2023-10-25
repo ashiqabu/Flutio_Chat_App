@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sample_project2/common/widgets/utils/utils.dart';
 import 'package:sample_project2/features/auth/controller/auth_controller.dart';
+import 'package:sample_project2/features/group/screens/create_group_screen.dart';
 import 'package:sample_project2/features/select_contacts/screens/select_contact_screen.dart';
 import 'package:sample_project2/features/chat/widgets/contact_list.dart';
 
@@ -46,6 +47,8 @@ class _MobileScreenLayoutState extends ConsumerState<MobileScreenLayout>
       case AppLifecycleState.paused:
         ref.read(authControllerProvider).setUserState(false);
         break;
+      case AppLifecycleState.hidden:
+        break;
     }
   }
 
@@ -72,12 +75,19 @@ class _MobileScreenLayoutState extends ConsumerState<MobileScreenLayout>
                     Icons.search,
                     color: Colors.grey,
                   )),
-              IconButton(
-                  onPressed: () {},
+              PopupMenuButton(
                   icon: const Icon(
-                    Icons.camera,
+                    Icons.more_vert,
                     color: Colors.grey,
-                  )),
+                  ),
+                  itemBuilder: (context) => [
+                        PopupMenuItem(
+                          child: const Text('Create Group'),
+                          onTap: () =>
+                           Future(()=> Navigator.pushNamed(
+                                context, CreateGroupScreen.routeName)),
+                        )
+                      ])
             ],
             bottom: TabBar(
                 controller: tabcontroller,
@@ -111,13 +121,12 @@ class _MobileScreenLayoutState extends ConsumerState<MobileScreenLayout>
                 File? pickedImage = await pickImageFromGallery(context);
                 if (pickedImage != null) {
                   // ignore: use_build_context_synchronously
-                  Navigator.pushNamed(
-                    context, ConfirmStatusScreen.routeName,
-                  arguments: pickedImage);
+                  Navigator.pushNamed(context, ConfirmStatusScreen.routeName,
+                      arguments: pickedImage);
                 }
               }
             },
-            backgroundColor: tabColor,
+            backgroundColor: messageColor,
             child: const Icon(
               Icons.comment,
               color: Colors.white,

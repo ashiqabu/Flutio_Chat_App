@@ -5,7 +5,7 @@ import 'package:sample_project2/features/auth/controller/auth_controller.dart';
 import 'package:sample_project2/features/status/repository/status_repository.dart';
 import 'package:sample_project2/model/status_model.dart';
 
-final  statusControllerProvider = Provider((ref) {
+final statusControllerProvider = Provider((ref) {
   final statusRepository = ref.read(statusRepositoryProvider);
   return StatusController(
     statusRepository: statusRepository,

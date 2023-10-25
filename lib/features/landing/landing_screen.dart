@@ -22,7 +22,7 @@ class LandingScreen extends StatelessWidget {
             height: 50,
           ),
           const Text(
-            'Welcome to WhatsApp',
+            'Welcome to Flutio',
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
           ),
           SizedBox(height: size.height / 9),

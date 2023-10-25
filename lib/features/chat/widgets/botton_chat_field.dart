@@ -3,7 +3,12 @@ import 'dart:io';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_sound/public/flutter_sound_recorder.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:sample_project2/common/provider/message_replay_provider.dart';
 import 'package:sample_project2/common/widgets/utils/utils.dart';
+import 'package:sample_project2/features/chat/widgets/message_replay_preview.dart';
 
 import '../../../colors.dart';
 import '../../../common/enums/message_enum.dart';
@@ -11,8 +16,10 @@ import '../controller/chat_controller.dart';
 
 class BottomChatField extends ConsumerStatefulWidget {
   final String recieverUserId;
+  final bool isGroupChat;
   const BottomChatField({
     required this.recieverUserId,
+    required this.isGroupChat,
     super.key,
   });
 
@@ -24,21 +31,62 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   bool isShowSendButton = false;
   bool isShowEmojiContainer = false;
   final TextEditingController _messageController = TextEditingController();
+  FlutterSoundRecorder? soundRecorder;
+  bool isRecorderInit = false;
+  bool isRecording = false;
   FocusNode focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    soundRecorder = FlutterSoundRecorder();
+    openAudio();
+  }
+
+  void openAudio() async {
+    final status = await Permission.microphone.request();
+    if (status != PermissionStatus.granted) {
+      throw RecordingPermissionException('Mic permission not allowed');
+    }
+    await soundRecorder!.openRecorder();
+    isRecorderInit = true;
+  }
 
   @override
   void dispose() {
     super.dispose();
     _messageController.dispose();
+    soundRecorder!.closeRecorder();
+    isRecorderInit = false;
   }
 
   void sendTextMessage() async {
     if (isShowSendButton) {
       ref.read(chatControllerProvider).sendTextMessage(
-          context, _messageController.text.trim(), widget.recieverUserId);
-
+          context,
+          _messageController.text.trim(),
+          widget.recieverUserId,
+          widget.isGroupChat);
       setState(() {
         _messageController.text = '';
+      });
+    } else {
+      var tempDir = await getTemporaryDirectory();
+      var path = '${tempDir.path}/flutter_sound.aac';
+      if (!isRecorderInit) {
+        return;
+      }
+      if (isRecording) {
+        await soundRecorder!.stopRecorder();
+        sendFileMessage(File(path), MessageEnum.audio);
+      } else {
+        await soundRecorder!.startRecorder(
+          toFile: path,
+        );
+      }
+
+      setState(() {
+        isRecording = !isRecording;
       });
     }
   }
@@ -47,9 +95,8 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
     File file,
     MessageEnum messageEnum,
   ) {
-    ref
-        .read(chatControllerProvider)
-        .sendFileMessage(context, file, widget.recieverUserId, messageEnum);
+    ref.read(chatControllerProvider).sendFileMessage(
+        context, file, widget.recieverUserId, messageEnum, widget.isGroupChat);
   }
 
   void selectImage() async {
@@ -70,9 +117,8 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
     final gif = await pickGIF(context);
     if (gif != null) {
       // ignore: use_build_context_synchronously
-      ref
-          .read(chatControllerProvider)
-          .sendGIFMessage(context, gif.url, widget.recieverUserId);
+      ref.read(chatControllerProvider).sendGIFMessage(
+          context, gif.url, widget.recieverUserId, widget.isGroupChat);
     }
   }
 
@@ -103,8 +149,12 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
 
   @override
   Widget build(BuildContext context) {
+    final messageReply = ref.watch(messageReplyProvider);
+    final isShowMessageReply = messageReply != null;
+
     return Column(
       children: [
+        isShowMessageReply ? const MessageReplyPreview() : const SizedBox(),
         Row(
           children: [
             Expanded(
@@ -181,12 +231,16 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
             Padding(
               padding: const EdgeInsets.only(bottom: 8, right: 2, left: 2),
               child: CircleAvatar(
-                radius: 25,
-                backgroundColor: appBarColor,
+                backgroundColor: messageColor,
+                radius: 24,
                 child: GestureDetector(
                   onTap: sendTextMessage,
                   child: Icon(
-                    isShowSendButton ? Icons.send : Icons.mic,
+                    isShowSendButton
+                        ? Icons.send
+                        : isRecording
+                            ? Icons.close
+                            : Icons.mic,
                     color: Colors.white,
                   ),
                 ),

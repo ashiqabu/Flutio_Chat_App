@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -42,7 +41,7 @@ class StatusRepository {
       String uid = auth.currentUser!.uid;
       String imageurl = await ref
           .read(commonFirebaseStorageRepositoryProvider)
-          .storeFileTOFirebase(
+          .storeFileToFirebase(
             '/status/$statusId$uid',
             statusImage,
           );
@@ -108,6 +107,7 @@ class StatusRepository {
 
       await firestore.collection('status').doc(statusId).set(status.toMap());
     } catch (e) {
+      // ignore: use_build_context_synchronously
       showSnackBar(context: context, content: e.toString());
     }
   }
@@ -145,6 +145,7 @@ class StatusRepository {
       }
     } catch (e) {
       if (kDebugMode) print(e);
+      // ignore: use_build_context_synchronously
       showSnackBar(context: context, content: e.toString());
     }
     return statusData;

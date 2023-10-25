@@ -46,6 +46,7 @@ class AuthRepository {
           }),
           codeAutoRetrievalTimeout: (String verificationId) {});
     } on FirebaseAuthException catch (e) {
+      // ignore: use_build_context_synchronously
       showSnackBar(context: context, content: e.message!);
     }
   }
@@ -67,6 +68,7 @@ class AuthRepository {
         (route) => false,
       );
     } on FirebaseAuthException catch (e) {
+      // ignore: use_build_context_synchronously
       showSnackBar(context: context, content: e.message!);
     }
   }
@@ -84,7 +86,7 @@ class AuthRepository {
       if (profilePic != null) {
         photoUrl = await ref
             .read(commonFirebaseStorageRepositoryProvider)
-            .storeFileTOFirebase('profilePic/$uid', profilePic);
+            .storeFileToFirebase('profilePic/$uid', profilePic);
       }
 
       var user = UserModel(
@@ -102,6 +104,7 @@ class AuthRepository {
         (route) => false,
       );
     } catch (e) {
+      // ignore: use_build_context_synchronously
       showSnackBar(context: context, content: e.toString());
     }
   }
