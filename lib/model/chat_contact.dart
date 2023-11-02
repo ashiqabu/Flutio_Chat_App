@@ -1,10 +1,10 @@
-
 class ChatContact {
   final String name;
   final String profiilePic;
   final String contactId;
   final DateTime timeSent;
   final String lastMessage;
+
   ChatContact({
     required this.name,
     required this.profiilePic,
@@ -32,5 +32,4 @@ class ChatContact {
       lastMessage: map['lastMessage'] ?? '',
     );
   }
-
 }

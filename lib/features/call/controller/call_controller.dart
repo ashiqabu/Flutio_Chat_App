@@ -54,8 +54,11 @@ class CallController {
         hasDialled: false,
         isAudioCall: true,
       );
-
-      callRepository.makeCall(senderCallData, context, recieverCallData);
+      if (isGroupChat) {
+        callRepository.makeGroupCall(senderCallData, context, recieverCallData);
+      } else {
+        callRepository.makeCall(senderCallData, context, recieverCallData);
+      }
     });
   }
 

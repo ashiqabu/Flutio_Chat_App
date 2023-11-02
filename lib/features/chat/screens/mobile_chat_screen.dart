@@ -21,8 +21,7 @@ class MobileChatScreen extends ConsumerWidget {
       required this.isGroupChat,
       required this.name,
       required this.uid,
-      required this.profilePic
-      });
+      required this.profilePic});
 
   void makeCall(WidgetRef ref, BuildContext context) {
     ref
@@ -47,30 +46,84 @@ class MobileChatScreen extends ConsumerWidget {
         appBar: AppBar(
           backgroundColor: appBarColor,
           title: isGroupChat
-              ? Text(name)
+              ? Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 1),
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(profilePic),
+                      ),
+                    ),
+                    Text(
+                      name,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                )
               : StreamBuilder<UserModel>(
                   stream: ref.read(authControllerProvider).userDataById(uid),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Loader();
                     }
+
                     return Column(
                       children: [
-                        Text(
-                          name,
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: CircleAvatar(
+                                backgroundImage: NetworkImage(profilePic),
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      name,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      snapshot.data!.isOnline
+                                          ? 'online'
+                                          : 'offline',
+                                      style: const TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.normal),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        Text(
-                          snapshot.data!.isOnline ? 'online' : 'offline',
-                          style: const TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.normal),
-                        )
                       ],
                     );
                   }),
-          actions: [
-            IconButton(onPressed: () =>makeCall(ref, context), icon: const Icon(Icons.video_call)),
-            IconButton(onPressed: () =>makeAudioCall(ref, context), icon: const Icon(Icons.call)),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
+          actions: <Widget>[
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () => makeCall(ref, context),
+                  icon: const Icon(Icons.video_call),
+                ),
+                IconButton(
+                  onPressed: () => makeAudioCall(ref, context),
+                  icon: const Icon(Icons.call),
+                ),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.more_vert),
+                ),
+              ],
+            ),
           ],
         ),
         body: Column(

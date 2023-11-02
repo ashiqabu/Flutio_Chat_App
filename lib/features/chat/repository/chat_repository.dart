@@ -44,7 +44,8 @@ class ChatRepository {
             profiilePic: user.profilePic,
             contactId: chatContact.contactId,
             timeSent: chatContact.timeSent,
-            lastMessage: chatContact.lastMessage,
+            lastMessage: chatContact.lastMessage, 
+           
           ),
         );
       }
@@ -118,7 +119,7 @@ class ChatRepository {
         profiilePic: senderUserData.profilePic,
         contactId: senderUserData.uid,
         timeSent: timeSent,
-        lastMessage: text,
+        lastMessage: text, 
       );
       await firestore
           .collection('users')

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sample_project2/common/widgets/utils/utils.dart';
 import 'package:sample_project2/model/user_model.dart';
-import 'package:sample_project2/screens/mobile_screen_layout.dart';
+import 'package:sample_project2/mobile_screen_layout.dart';
 
 import '../../../common/repository/common_firebase_storage_repository.dart';
 import '../screens/otp_screen.dart';

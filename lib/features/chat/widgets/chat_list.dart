@@ -15,7 +15,7 @@ import 'package:sample_project2/features/chat/widgets/sender_message_card.dart';
 class ChatList extends ConsumerStatefulWidget {
   final String reciverUserId;
   final bool isGroupChat;
-  
+
   const ChatList(
       {required this.isGroupChat, required this.reciverUserId, super.key});
 
@@ -130,5 +130,18 @@ class _ChatListState extends ConsumerState<ChatList> {
                 ),
               )),
         ));
+  }
+
+  int calculateUnseenMessageCount(List<Message> messages) {
+    int unseenCount = 0;
+
+    for (final message in messages) {
+      if (!message.isSeen &&
+          message.recieverId == FirebaseAuth.instance.currentUser!.uid) {
+        unseenCount++;
+      }
+    }
+
+    return unseenCount;
   }
 }

@@ -1,56 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:sample_project2/model/status_model.dart';
 import 'package:story_view/controller/story_controller.dart';
-import 'package:story_view/utils.dart';
 import 'package:story_view/widgets/story_view.dart';
-
-import '../../../common/widgets/loader.dart';
-import '../../../model/status_model.dart';
 
 class StatusScreen extends StatefulWidget {
   static const String routeName = '/status-screen';
   final Status status;
+
   const StatusScreen({
     Key? key,
     required this.status,
   }) : super(key: key);
 
   @override
-  State<StatusScreen> createState() => _StatusScreenState();
+  _StatusScreenState createState() => _StatusScreenState();
 }
 
 class _StatusScreenState extends State<StatusScreen> {
-  StoryController controller = StoryController();
-  List<StoryItem> storyItems = [];
+  final storyController = StoryController();
+  final List<StoryItem> storyItems = [];
 
   @override
   void initState() {
     super.initState();
-    initStoryPageItems();
-  }
-
-  void initStoryPageItems() {
-    for (int i = 0; i < widget.status.photoUrl.length; i++) {
-      storyItems.add(StoryItem.pageImage(
-        url: widget.status.photoUrl[i],
-        controller: controller,
-      ));
-    }
+    // Create a StoryItem for the status image
+    storyItems.add(
+      StoryItem.pageImage(
+        url: widget.status.profilePic,
+        controller: storyController,
+        caption: 'Status Caption', // You can customize the caption
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: storyItems.isEmpty
-          ? const Loader()
-          : StoryView(
-              storyItems: storyItems,
-              controller: controller,
-              onVerticalSwipeComplete: (direction) {
-                if (direction == Direction.down) {
-                  Navigator.pop(context);
-                }
-              },
-            ),
+      appBar: AppBar(
+        title:const Text('Status Viewer'),
+      ),
+      body: StoryView(
+        storyItems: storyItems,
+        controller: storyController,
+        onComplete: () {
+          // Handle the completion of the last status (e.g., navigate back)
+          Navigator.pop(context);
+        },
+      ),
     );
   }
 }

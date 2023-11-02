@@ -6,7 +6,7 @@ import 'package:sample_project2/common/widgets/error.dart';
 import 'package:sample_project2/features/auth/controller/auth_controller.dart';
 import 'package:sample_project2/firebase_options.dart';
 import 'package:sample_project2/router.dart';
-import 'package:sample_project2/screens/mobile_screen_layout.dart';
+import 'package:sample_project2/mobile_screen_layout.dart';
 import 'colors.dart';
 import 'common/widgets/loader.dart';
 import 'features/landing/landing_screen.dart';

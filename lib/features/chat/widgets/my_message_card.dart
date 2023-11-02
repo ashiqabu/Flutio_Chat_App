@@ -108,7 +108,7 @@ class MyMessageCard extends ConsumerWidget {
                         children: [
                           if (isReplying) ...[
                             Text(
-                              userName,
+                             'replay to $userName',
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white),

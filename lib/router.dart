@@ -44,30 +44,26 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           builder: (context) => MobileChatScreen(
                 name: name,
                 uid: uid,
-                isGroupChat: isGroupChat, 
+                isGroupChat: isGroupChat,
                 profilePic: profilePic,
-
               ));
 
-    case ConfirmStatusScreen.routeName:
-      final file = settings.arguments as File;
-      return MaterialPageRoute(
-          builder: (context) => ConfirmStatusScreen(
-             file: file,
-              ));
+    // case ConfirmStatusScreen.routeName:
+    //   final file = settings.arguments as File;
+    //   return MaterialPageRoute(
+    //       builder: (context) => ConfirmStatusScreen(
+    //             file: file,
+    //           ));
 
-  case StatusScreen.routeName:
-      final status = settings.arguments as Status;
-      return MaterialPageRoute(
-          builder: (context) => StatusScreen(
-             status: status,
-              ));
+    case StatusScreen.routeName:
+        final status = settings.arguments as Status;
+        return MaterialPageRoute(
+            builder: (context) => StatusScreen(
+               status: status,
+                ));
 
-              case CreateGroupScreen.routeName:
-      return MaterialPageRoute(
-          builder: (context) =>const CreateGroupScreen(
-             
-              ));
+    case CreateGroupScreen.routeName:
+      return MaterialPageRoute(builder: (context) => const CreateGroupScreen());
 
     default:
       return MaterialPageRoute(

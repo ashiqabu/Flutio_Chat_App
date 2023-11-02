@@ -18,7 +18,7 @@ class MessageReplyPreview extends ConsumerWidget {
       width: 350,
       padding: const EdgeInsets.all(8),
       decoration: const BoxDecoration(
-        color: Color.fromARGB(0, 64, 42, 42),
+        color: Color.fromARGB(255, 61, 67, 70),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(12),
           topRight: Radius.circular(12),
