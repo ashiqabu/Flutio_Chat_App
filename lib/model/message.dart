@@ -11,6 +11,7 @@ class Message {
   final String repliedMessage;
   final String repliedTo;
   final MessageEnum repleidMessageType;
+  final bool isEdited;
 
   Message({
     required this.text,
@@ -23,6 +24,7 @@ class Message {
     required this.repliedMessage,
     required this.repliedTo,
     required this.repleidMessageType,
+    required this.isEdited,
   });
 
   Map<String, dynamic> toMap() {
@@ -37,6 +39,7 @@ class Message {
       'repliedMessage': repliedMessage,
       'repliedTo': repliedTo,
       'repleidMessageType': repleidMessageType.type,
+      'isEdit': isEdited,
     };
   }
 
@@ -51,6 +54,7 @@ class Message {
       isSeen: map['isSeen'] ?? false,
       repliedMessage: map['repliedMessage'] ?? '',
       repliedTo: map['repliedTo'] ?? '',
+       isEdited: map['isEdit'] ?? false,
       repleidMessageType: (map['repleidMessageType'] as String).toEnum(),
     );
   }

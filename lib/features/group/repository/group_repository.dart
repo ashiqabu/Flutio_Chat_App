@@ -38,9 +38,10 @@ class GroupRepository {
                   ),
             )
             .get();
-        if (userCollection.docs.isNotEmpty&&userCollection.docs[0].exists) {
+        if (userCollection.docs.isNotEmpty && userCollection.docs[0].exists) {
           uids.add(userCollection.docs[0].data()['uid']);
         }
+   
       }
       var groupId = const Uuid().v1();
       String profileUrl = await ref
@@ -60,4 +61,7 @@ class GroupRepository {
       showSnackBar(context: context, content: e.toString());
     }
   }
+   
+
+  
 }

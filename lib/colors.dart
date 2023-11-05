@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const backgroundColor = Color.fromRGBO(13, 1, 1, 1);
 const textColor = Color.fromRGBO(241, 241, 242, 1);
-const appBarColor = Color.fromARGB(255, 103, 33, 223);
+const appBarColor = Color.fromARGB(255, 0, 0, 0);
 const webAppBarColor = Color.fromRGBO(42, 47, 50, 1);
 const messageColor = Color.fromARGB(255, 103, 33, 223);
 const senderMessageColor = Color.fromARGB(255, 159, 179, 198);

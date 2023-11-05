@@ -39,6 +39,7 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   @override
   void initState() {
     super.initState();
+
     soundRecorder = FlutterSoundRecorder();
     openAudio();
   }
@@ -63,10 +64,11 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   void sendTextMessage() async {
     if (isShowSendButton) {
       ref.read(chatControllerProvider).sendTextMessage(
-          context,
-          _messageController.text.trim(),
-          widget.recieverUserId,
-          widget.isGroupChat);
+            context,
+            _messageController.text.trim(),
+            widget.recieverUserId,
+            widget.isGroupChat,
+          );
       setState(() {
         _messageController.text = '';
       });

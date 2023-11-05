@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:sample_project2/common/enums/message_enum.dart';
+import 'package:sample_project2/features/chat/widgets/full_image_screen.dart';
 import 'package:sample_project2/features/chat/widgets/video_player_item.dart';
 
 class DisplayTextImageGif extends StatelessWidget {
@@ -15,15 +16,19 @@ class DisplayTextImageGif extends StatelessWidget {
     bool isPlaying = false;
     final AudioPlayer audioPlayer = AudioPlayer();
     return type == MessageEnum.text
-        ? Text(
-            message,
-            style: const TextStyle(fontSize: 16, color: Colors.black),
+        ? Column(
+            children: [
+              Text(
+                message,
+                style: const TextStyle(fontSize: 16, color: Colors.black),
+              ),
+            ],
           )
         : type == MessageEnum.audio
             ? StatefulBuilder(builder: (context, setState) {
                 return IconButton(
                     constraints: const BoxConstraints(
-                        maxWidth: 300, minWidth: 200, maxHeight: 30),
+                        maxWidth: 300, minWidth: 200, maxHeight: 25),
                     onPressed: () async {
                       if (isPlaying) {
                         await audioPlayer.pause();
@@ -46,6 +51,21 @@ class DisplayTextImageGif extends StatelessWidget {
                 ? VideoPlayerItem(videoUrl: message)
                 : type == MessageEnum.gif
                     ? CachedNetworkImage(imageUrl: message)
-                    : CachedNetworkImage(imageUrl: message);
+                    : GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FullScreenImagePage(
+                                        imageUrl: message,
+                                      )));
+                        },
+                        child: Container(
+                            constraints: const BoxConstraints(
+                              maxWidth: 200, // Set your desired maximum width
+                              maxHeight: 200, // Set your desired maximum height
+                            ),
+                            child: CachedNetworkImage(imageUrl: message)),
+                      );
   }
 }

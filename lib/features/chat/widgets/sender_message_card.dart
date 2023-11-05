@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sample_project2/colors.dart';
-import 'package:sample_project2/features/chat/repository/chat_repository.dart';
 import 'package:sample_project2/features/chat/widgets/display_text_image_gif.dart';
 import 'package:swipe_to/swipe_to.dart';
 
@@ -18,6 +17,7 @@ class SenderMessageCard extends ConsumerWidget {
   final String receiverId;
   final String messageId;
   final bool isGroupchat;
+   final bool isEdited;
   const SenderMessageCard({
     super.key,
     required this.message,
@@ -30,6 +30,7 @@ class SenderMessageCard extends ConsumerWidget {
     required this.receiverId,
     required this.messageId,
     required this.isGroupchat,
+   required this.isEdited,
   });
 
   @override
@@ -42,121 +43,88 @@ class SenderMessageCard extends ConsumerWidget {
         child: ConstrainedBox(
           constraints:
               BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 45),
-          child: GestureDetector(
-            onLongPress: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    backgroundColor: Colors.white,
-                    title: const Text(
-                      'Do you want to delete the message?',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                    content: const Text(
-                      'This action will delete the messages from the chat',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    actions: <Widget>[
-                      TextButton(
-                        child: const Text('Cancel'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      TextButton(
-                        child: const Text('Yes'),
-                        onPressed: () {
-                          ref
-                              .read(chatRepositoryProvider)
-                              .deleteMessagesFromMessageSubCollection(
-                                  recieverUserId: receiverId,
-                                  messageId: messageId,
-                                  isGroupChat: isGroupchat);
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-            child: Card(
-              elevation: 1,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(0),
-                  topRight: Radius.circular(10),
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
-                ),
+          child: Card(
+            elevation: 1,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(0),
+                topRight: Radius.circular(10),
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10),
               ),
-              color: senderMessageColor,
-              margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: type == MessageEnum.text
-                        ? const EdgeInsets.only(
-                            left: 20, right: 30, top: 5, bottom: 20)
-                        : const EdgeInsets.only(
-                            left: 5,
-                            top: 5,
-                            right: 5,
-                            bottom: 25,
-                          ),
-                    child: Column(
-                      children: [
-                        if (isReplying) ...[
-                          Text(
-                            userName,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: messageColor),
-                          ),
-                          const SizedBox(height: 3),
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: const BoxDecoration(
-                              color: messageColor,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(
-                                  5,
-                                ),
+            ),
+            color: senderMessageColor,
+            margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+            child: Stack(
+              children: [
+                Padding(
+                  padding: type == MessageEnum.text
+                      ? const EdgeInsets.only(
+                          left: 20, right: 30, top: 5, bottom: 20)
+                      : const EdgeInsets.only(
+                          left: 5,
+                          top: 5,
+                          right: 5,
+                          bottom: 25,
+                        ),
+                  child: Column(
+                    children: [
+                      if (isReplying) ...[
+                        Text(
+                          userName,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, color: messageColor),
+                        ),
+                        const SizedBox(height: 3),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: const BoxDecoration(
+                            color: messageColor,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(
+                                5,
                               ),
                             ),
-                            child: DisplayTextImageGif(
-                              message: repliedText,
-                              type: repliedMessageType,
-                            ),
                           ),
-                          const SizedBox(height: 8),
-                        ],
-                        DisplayTextImageGif(
-                          message: message,
-                          type: type,
+                          child: DisplayTextImageGif(
+                            message: repliedText,
+                            type: repliedMessageType,
+                          ),
                         ),
+                        const SizedBox(height: 8),
                       ],
-                    ),
+                      DisplayTextImageGif(
+                        message: message,
+                        type: type,
+                      ),
+                    ],
                   ),
-                  Positioned(
-                    bottom: 5,
-                    right: 10,
-                    child: Row(
-                      children: [
-                        Text(
-                          date,
-                          style:
-                              const TextStyle(fontSize: 8, color: Colors.black),
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                ),
+                Positioned(
+                  bottom: 5,
+                  right: 10,
+                  child: Row(
+                    children: [
+                      isEdited == true
+                          ? const Text(
+                              'Edited',
+                              style:
+                                  TextStyle(fontSize: 8, color: Colors.black),
+                            )
+                          : const SizedBox(),
+                          const SizedBox(width: 5,),
+                      Text(
+                        date,
+                        style:
+                            const TextStyle(fontSize: 8, color: Colors.black),
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
           ),
         ),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
@@ -37,12 +39,20 @@ class SelectContactRepository {
         var userData = UserModel.fromMap(document.data());
         String selectedPhoneNum =
             selectedContact.phones[0].number.replaceAll(' ', '');
-        if (selectedPhoneNum == userData.phoneNumber) {
+
+        log(userData.phoneNumber);
+        log(userData.uid);
+        log(userData.name);
+        if ('+91$selectedPhoneNum' == userData.phoneNumber) {
           isFound = true;
           // ignore: use_build_context_synchronously
-          Navigator.pushNamed(context, MobileChatScreen.routeName,arguments: {
-            'name':userData.name,
-            'uid':userData.uid,
+          Navigator.pushNamed(context, MobileChatScreen.routeName, arguments: {
+            'name': userData.name,
+            'uid': userData.uid,
+            'groupId': userData.groupId,
+            'profilePic': userData.profilePic,
+            'isOnline': userData.isOnline,
+            "phoneNumber": userData.phoneNumber
           });
         }
       }

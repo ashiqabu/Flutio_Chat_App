@@ -40,11 +40,17 @@ class ChatController {
     return chatRepository.getGroupChatStream(groupId);
   }
 
-  void sendTextMessage(BuildContext context, String text, String recieverUserId,
-      bool isGroupChat) {
+  void sendTextMessage(
+    BuildContext context,
+    String text,
+    String recieverUserId,
+    bool isGroupChat,
+  ) {
     final messageReply = ref.read(messageReplyProvider);
-    ref.read(userDataAuthProvider).whenData((value) =>
-        chatRepository.sendTextMessage(
+    ref
+        .read(userDataAuthProvider)
+        .whenData((value) => chatRepository.sendTextMessage(
+            // isEdited: false,
             context: context,
             text: text,
             recieverUserId: recieverUserId,

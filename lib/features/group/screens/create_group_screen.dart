@@ -94,7 +94,7 @@ class _CreateGroupState extends ConsumerState<CreateGroupScreen> {
                   'Select Contacts',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 )),
-            const SelectContactGroup()
+            const SelectContactsGroup()
           ],
         ),
       ),

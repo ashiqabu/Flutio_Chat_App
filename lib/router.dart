@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:sample_project2/features/group/screens/create_group_screen.dart';
 import 'package:sample_project2/features/select_contacts/screens/select_contact_screen.dart';
@@ -10,7 +8,6 @@ import 'common/widgets/error.dart';
 import 'features/auth/screens/login_screen.dart';
 import 'features/auth/screens/otp_screen.dart';
 import 'features/auth/screens/user_information_screen.dart';
-import 'features/status/screens/confirm_status.dart';
 import 'features/status/screens/status_screen.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -56,11 +53,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     //           ));
 
     case StatusScreen.routeName:
-        final status = settings.arguments as Status;
-        return MaterialPageRoute(
-            builder: (context) => StatusScreen(
-               status: status,
-                ));
+      final status = settings.arguments as Status;
+      return MaterialPageRoute(
+          builder: (context) => StatusScreen(
+                status: status,
+              ));
 
     case CreateGroupScreen.routeName:
       return MaterialPageRoute(builder: (context) => const CreateGroupScreen());

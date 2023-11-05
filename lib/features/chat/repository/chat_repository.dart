@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -44,8 +43,7 @@ class ChatRepository {
             profiilePic: user.profilePic,
             contactId: chatContact.contactId,
             timeSent: chatContact.timeSent,
-            lastMessage: chatContact.lastMessage, 
-           
+            lastMessage: chatContact.lastMessage,
           ),
         );
       }
@@ -119,7 +117,7 @@ class ChatRepository {
         profiilePic: senderUserData.profilePic,
         contactId: senderUserData.uid,
         timeSent: timeSent,
-        lastMessage: text, 
+        lastMessage: text,
       );
       await firestore
           .collection('users')
@@ -144,19 +142,22 @@ class ChatRepository {
     }
   }
 
-  void _saveMessageToMessageSubCollection({
-    required String recieverUserId,
-    required String text,
-    required DateTime timesent,
-    required String messageId,
-    required String username,
-    required String? recieverUserName,
-    required MessageEnum messageType,
-    required MessageReply? messageReply,
-    required String senderUserName,
-    required bool isGroupChat,
-  }) async {
+  void _saveMessageToMessageSubCollection(
+      {required String recieverUserId,
+      required String text,
+      required DateTime timesent,
+      required String messageId,
+      required String username,
+      required String? recieverUserName,
+      required MessageEnum messageType,
+      required MessageReply? messageReply,
+      required String senderUserName,
+      required bool isGroupChat,
+      required bool isEdit,
+      }) async {
+    
     final message = Message(
+      isEdited: isEdit,
       senderId: auth.currentUser!.uid,
       recieverId: recieverUserId,
       text: text,
@@ -211,6 +212,7 @@ class ChatRepository {
     required UserModel senderUser,
     required MessageReply? messageReply,
     required bool isGroupChat,
+    // required bool isEdited,
   }) async {
     try {
       var timeSent = DateTime.now();
@@ -228,6 +230,7 @@ class ChatRepository {
           timeSent, recieverUserId, isGroupChat);
 
       _saveMessageToMessageSubCollection(
+          isEdit: false,
           recieverUserId: recieverUserId,
           text: text,
           timesent: timeSent,
@@ -288,16 +291,11 @@ class ChatRepository {
         default:
           contactMsg = '';
       }
-      _saveDataToContactsSubCollection(
-        senderUserData,
-        recieverUserData,
-        contactMsg,
-        timeSent,
-        recieverUserId,
-        isGroupChat,
-      );
+      _saveDataToContactsSubCollection(senderUserData, recieverUserData,
+          contactMsg, timeSent, recieverUserId, isGroupChat);
 
       _saveMessageToMessageSubCollection(
+        isEdit: false,
         recieverUserId: recieverUserId,
         text: imageUrl,
         timesent: timeSent,
@@ -337,16 +335,11 @@ class ChatRepository {
 
       var messageId = const Uuid().v1();
 
-      _saveDataToContactsSubCollection(
-        senderUser,
-        recieverUserData,
-        'GIF',
-        timeSent,
-        recieverUserId,
-        isGroupChat,
-      );
+      _saveDataToContactsSubCollection(senderUser, recieverUserData, 'GIF',
+          timeSent, recieverUserId, isGroupChat);
 
       _saveMessageToMessageSubCollection(
+          isEdit: false,
           recieverUserId: recieverUserId,
           text: gifUrl,
           timesent: timeSent,
@@ -406,22 +399,56 @@ class ChatRepository {
           .delete();
     } else {
       await firestore
-        .collection('users')
-        .doc(auth.currentUser!.uid)
-        .collection('chats')
-        .doc(recieverUserId)
-        .collection('messages')
-        .doc(messageId)
-        .delete();
+          .collection('users')
+          .doc(auth.currentUser!.uid)
+          .collection('chats')
+          .doc(recieverUserId)
+          .collection('messages')
+          .doc(messageId)
+          .delete();
 
-    await firestore
-        .collection('users')
-        .doc(recieverUserId)
-        .collection('chats')
-        .doc(auth.currentUser!.uid)
-        .collection('messages')
-        .doc(messageId)
-        .delete();
+      await firestore
+          .collection('users')
+          .doc(recieverUserId)
+          .collection('chats')
+          .doc(auth.currentUser!.uid)
+          .collection('messages')
+          .doc(messageId)
+          .delete();
+    }
   }
-}
+
+  void editMessagesFromMessageSubCollection({
+    required String recieverUserId,
+    required String messageId,
+    required bool isGroupChat,
+    required String message,
+  }) async {
+    if (isGroupChat) {
+      await firestore
+          .collection('groups')
+          .doc(recieverUserId)
+          .collection('chats')
+          .doc(messageId)
+          .update({"text": message, "isEdit": true});
+    } else {
+      await firestore
+          .collection('users')
+          .doc(auth.currentUser!.uid)
+          .collection('chats')
+          .doc(recieverUserId)
+          .collection('messages')
+          .doc(messageId)
+          .update({"text": message, "isEdit": true});
+
+      await firestore
+          .collection('users')
+          .doc(recieverUserId)
+          .collection('chats')
+          .doc(auth.currentUser!.uid)
+          .collection('messages')
+          .doc(messageId)
+          .update({"text": message, "isEdit": true});
+    }
+  }
 }

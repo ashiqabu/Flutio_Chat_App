@@ -1,6 +1,4 @@
 import 'dart:developer';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sample_project2/colors.dart';
@@ -13,7 +11,6 @@ class StatusContactsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final firestore = FirebaseFirestore.instance;
     final data = StatusClass().getStatusList();
     log(data.toString());
     return Container(
@@ -40,6 +37,7 @@ class StatusContactsScreen extends ConsumerWidget {
                       ),
                       Expanded(
                         child: GridView.builder(
+                          
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 4,
@@ -89,15 +87,15 @@ class StatusContactsScreen extends ConsumerWidget {
                                                       child:
                                                           const Text('Cancel'),
                                                       onPressed: () {
-
                                                         Navigator.of(context)
                                                             .pop();
                                                       },
                                                     ),
                                                     TextButton(
                                                       child: const Text('Yes'),
-                                                      onPressed: () {
-                                                        
+                                                      onPressed: () async {
+                                                        deleteStatus(statusData
+                                                            .statusId!);
                                                         Navigator.of(context)
                                                             .pop();
                                                       },

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -51,6 +53,9 @@ class _ChatListState extends ConsumerState<ChatList> {
 
   @override
   Widget build(BuildContext context) {
+    final date = DateTime.now();
+    final formatDate = DateFormat('dd-MM-yyyy').format(date);
+    log(formatDate);
     return Scaffold(
         body: StreamBuilder<List<Message>>(
           stream: widget.isGroupChat
@@ -67,51 +72,63 @@ class _ChatListState extends ConsumerState<ChatList> {
             SchedulerBinding.instance.addPostFrameCallback((_) {
               messageCntrl.jumpTo(messageCntrl.position.maxScrollExtent);
             });
-            return ListView.builder(
-              controller: messageCntrl,
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final messageData = snapshot.data![index];
-                var timeSent =
-                    DateFormat('h:mm a').format(messageData.timeSent);
 
-                if (!messageData.isSeen &&
-                    messageData.recieverId ==
-                        FirebaseAuth.instance.currentUser!.uid) {
-                  ref.read(chatControllerProvider).setChatMessageSeen(
-                      context, widget.reciverUserId, messageData.messageId);
-                }
-                if (messageData.senderId ==
-                    FirebaseAuth.instance.currentUser!.uid) {
-                  return MyMessageCard(
-                    type: messageData.type,
-                    message: messageData.text,
-                    date: timeSent,
-                    repliedText: messageData.repliedMessage,
-                    userName: messageData.repliedTo,
-                    repliedMessageType: messageData.repleidMessageType,
-                    onleftSwipe: () => onMessageSwipe(
-                        messageData.text, true, messageData.type),
-                    isSeen: messageData.isSeen,
-                    messageId: messageData.messageId,
-                    receiverId: messageData.recieverId,
-                    isGroupchat: false,
-                  );
-                }
-                return SenderMessageCard(
-                  message: messageData.text,
-                  date: timeSent,
-                  type: messageData.type,
-                  userName: messageData.repliedTo,
-                  repliedMessageType: messageData.repleidMessageType,
-                  onRightSwipe: () =>
-                      onMessageSwipe(messageData.text, false, messageData.type),
-                  repliedText: messageData.repliedMessage,
-                  messageId: messageData.messageId,
-                  receiverId: messageData.recieverId,
-                  isGroupchat: false,
-                );
-              },
+            return Column(
+              children: [
+                Card(color: messageColor, child: Text(formatDate)),
+                Expanded(
+                  child: ListView.builder(
+                    controller: messageCntrl,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final messageData = snapshot.data![index];
+                      var timeSent =
+                          DateFormat('h:mm a').format(messageData.timeSent);
+
+                      if (!messageData.isSeen &&
+                          messageData.recieverId ==
+                              FirebaseAuth.instance.currentUser!.uid) {
+                        ref.read(chatControllerProvider).setChatMessageSeen(
+                            context,
+                            widget.reciverUserId,
+                            messageData.messageId);
+                      }
+                      if (messageData.senderId ==
+                          FirebaseAuth.instance.currentUser!.uid) {
+                        return MyMessageCard(
+                          type: messageData.type,
+                          message: messageData.text,
+                          date: timeSent,
+                          repliedText: messageData.repliedMessage,
+                          userName: messageData.repliedTo,
+                          repliedMessageType: messageData.repleidMessageType,
+                          onleftSwipe: () => onMessageSwipe(
+                              messageData.text, true, messageData.type),
+                          isSeen: messageData.isSeen,
+                          messageId: messageData.messageId,
+                          receiverId: messageData.recieverId,
+                          isGroupchat: false,
+                          isEdited: messageData.isEdited,
+                        );
+                      }
+                      return SenderMessageCard(
+                        message: messageData.text,
+                        date: timeSent,
+                        type: messageData.type,
+                        userName: messageData.repliedTo,
+                        repliedMessageType: messageData.repleidMessageType,
+                        onRightSwipe: () => onMessageSwipe(
+                            messageData.text, false, messageData.type),
+                        repliedText: messageData.repliedMessage,
+                        messageId: messageData.messageId,
+                        receiverId: messageData.recieverId,
+                        isGroupchat: false,
+                        isEdited: messageData.isEdited,
+                      );
+                    },
+                  ),
+                ),
+              ],
             );
           },
         ),
@@ -132,16 +149,16 @@ class _ChatListState extends ConsumerState<ChatList> {
         ));
   }
 
-  int calculateUnseenMessageCount(List<Message> messages) {
-    int unseenCount = 0;
+  // int calculateUnseenMessageCount(List<Message> messages) {
+  //   int unseenCount = 0;
 
-    for (final message in messages) {
-      if (!message.isSeen &&
-          message.recieverId == FirebaseAuth.instance.currentUser!.uid) {
-        unseenCount++;
-      }
-    }
+  //   for (final message in messages) {
+  //     if (!message.isSeen &&
+  //         message.recieverId == FirebaseAuth.instance.currentUser!.uid) {
+  //       unseenCount++;
+  //     }
+  //   }
 
-    return unseenCount;
-  }
+  //   return unseenCount;
+  // }
 }

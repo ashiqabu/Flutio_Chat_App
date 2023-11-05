@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sample_project2/colors.dart';
 import 'package:sample_project2/common/enums/message_enum.dart';
 import 'package:sample_project2/features/chat/repository/chat_repository.dart';
+import 'package:sample_project2/features/chat/widgets/edit_message.dart';
 import 'package:swipe_to/swipe_to.dart';
 
 import 'display_text_image_gif.dart';
@@ -19,6 +22,7 @@ class MyMessageCard extends ConsumerWidget {
   final String receiverId;
   final String messageId;
   final bool isGroupchat;
+  final bool isEdited;
 
   const MyMessageCard({
     super.key,
@@ -33,6 +37,7 @@ class MyMessageCard extends ConsumerWidget {
     required this.receiverId,
     required this.messageId,
     required this.isGroupchat,
+    required this.isEdited,
   });
 
   @override
@@ -62,6 +67,18 @@ class MyMessageCard extends ConsumerWidget {
                     ),
                     actions: <Widget>[
                       TextButton(
+                        child: const Text('Edit Message'),
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => EditMessageScreen(
+                                    isGroupChat: isGroupchat,
+                                    messageId: messageId,
+                                    recieverId: receiverId,
+                                    initialMessage: message,
+                                  )));
+                        },
+                      ),
+                      TextButton(
                         child: const Text('Cancel'),
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -70,6 +87,8 @@ class MyMessageCard extends ConsumerWidget {
                       TextButton(
                         child: const Text('Yes'),
                         onPressed: () {
+                          log(message);
+
                           ref
                               .read(chatRepositoryProvider)
                               .deleteMessagesFromMessageSubCollection(
@@ -101,14 +120,14 @@ class MyMessageCard extends ConsumerWidget {
                   Padding(
                       padding: type == MessageEnum.text
                           ? const EdgeInsets.only(
-                              left: 20, right: 40, top: 5, bottom: 20)
+                              left: 50, right: 40, top: 5, bottom: 20)
                           : const EdgeInsets.only(
                               left: 5, right: 5, top: 5, bottom: 25),
                       child: Column(
                         children: [
                           if (isReplying) ...[
                             Text(
-                             'replay to $userName',
+                              'replay to $userName',
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white),
@@ -120,6 +139,7 @@ class MyMessageCard extends ConsumerWidget {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5))),
                               child: DisplayTextImageGif(
+                                
                                 message: repliedText,
                                 type: repliedMessageType,
                               ),
@@ -129,6 +149,8 @@ class MyMessageCard extends ConsumerWidget {
                           DisplayTextImageGif(
                             message: message,
                             type: type,
+                             
+                            
                           ),
                         ],
                       )),
@@ -137,6 +159,16 @@ class MyMessageCard extends ConsumerWidget {
                     right: 10,
                     child: Row(
                       children: [
+                        isEdited == true
+                            ? const Text(
+                                'Edited',
+                                style:
+                                    TextStyle(fontSize: 8, color: Colors.white),
+                              )
+                            : const SizedBox(),
+                        const SizedBox(
+                          width: 5,
+                        ),
                         Text(
                           date,
                           style:
