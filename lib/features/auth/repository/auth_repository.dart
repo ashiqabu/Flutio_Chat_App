@@ -38,6 +38,7 @@ class AuthRepository {
             await auth.signInWithCredential(credential);
           },
           verificationFailed: (e) {
+            //print(e.toString());
             throw Exception(e.message);
           },
           codeSent: ((String verificationId, int? resendToken) async {

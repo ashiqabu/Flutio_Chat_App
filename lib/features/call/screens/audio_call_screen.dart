@@ -4,7 +4,6 @@ import 'package:agora_uikit/agora_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 import 'package:sample_project2/common/widgets/loader.dart';
 import 'package:sample_project2/config/agora_config.dart';
 import 'package:sample_project2/features/call/controller/call_controller.dart';
@@ -46,7 +45,7 @@ class _AudioCallScreenState extends ConsumerState<AudioCallScreen> {
     );
 
     initAgora();
-    startCallTimer();
+    // startCallTimer();
   }
 
   void initAgora() async {
@@ -60,19 +59,19 @@ class _AudioCallScreenState extends ConsumerState<AudioCallScreen> {
     // };
   }
 
-  void startCallTimer() {
-    if (isCallConnected) {
-      callTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        setState(() {
-          secondsElapsed++;
-        });
-      });
-    }
-  }
+  // void startCallTimer() {
+  //   if (isCallConnected) {
+  //     callTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+  //       setState(() {
+  //         secondsElapsed++;
+  //       });
+  //     });
+  //   }
+  // }
 
   @override
   void dispose() {
-    callTimer.cancel();
+    // callTimer.cancel();
     super.dispose();
   }
 
@@ -86,23 +85,23 @@ class _AudioCallScreenState extends ConsumerState<AudioCallScreen> {
                 alignment: Alignment.bottomCenter,
                 children: [
                   AgoraVideoViewer(client: client!),
-                  Center(
+                  const Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.mic,
                           size: 100,
                           color: Colors.grey,
                         ),
-                        Positioned(
-                          top: 20,
-                          right: 20,
-                          child: Text(
-                            'Call Time: ${_formatDuration(secondsElapsed)}',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ),
+                        // Positioned(
+                        //   top: 20,
+                        //   right: 20,
+                        //   child: Text(
+                        //     'Call Time: ${_formatDuration(secondsElapsed)}',
+                        //     style: const TextStyle(fontSize: 16),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
@@ -120,8 +119,10 @@ class _AudioCallScreenState extends ConsumerState<AudioCallScreen> {
                                   widget.call.receiverId,
                                   context,
                                 );
+
+                            int count = 0;
                             // ignore: use_build_context_synchronously
-                            Navigator.pop(context);
+                            Navigator.of(context).popUntil((_) => count++ >= 2);
                           },
                           icon: const Icon(Icons.call_end)),
                     ),
@@ -132,9 +133,9 @@ class _AudioCallScreenState extends ConsumerState<AudioCallScreen> {
     );
   }
 
-  String _formatDuration(int seconds) {
-    final minutes = seconds ~/ 60;
-    final remainingSeconds = seconds % 60;
-    return '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
-  }
+  // String _formatDuration(int seconds) {
+  //   final minutes = seconds ~/ 60;
+  //   final remainingSeconds = seconds % 60;
+  //   return '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
+  // }
 }

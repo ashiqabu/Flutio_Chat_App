@@ -1,39 +1,77 @@
-// import 'dart:io';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:sample_project2/features/status/repository/status_repository.dart';
-// import '../../../colors.dart';
+import 'dart:io';
 
-// class ConfirmStatusScreen extends ConsumerWidget {
-//   static const String routeName = '/confirm-status-screen';
-//   final File file;
-//   const ConfirmStatusScreen({
-//     Key? key,
-//     required this.file,
-//   }) : super(key: key);
+import 'package:flutter/material.dart';
+import 'package:sample_project2/colors.dart';
+import 'package:sample_project2/features/status/repository/status_repository.dart';
 
-//   // void addStatuss(WidgetRef ref, BuildContext context) {
-//   //   ref.read(statusControllerProvider).addStatus(file, context);
-//   //   Navigator.pop(context);
-//   // }
+import '../../../model/status_model.dart';
 
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     return Scaffold(
-//       body: Center(
-//         child: AspectRatio(
-//           aspectRatio: 9 / 16,
-//           child: Image.file(file),
-//         ),
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: () => StatusClass().getPhotos(),
-//         backgroundColor: messageColor,
-//         child: const Icon(
-//           Icons.done,
-//           color: Colors.white,
-//         ),
-//       ),
-//     );
-//   }
-// }
+class ConfirmStatusPage extends StatefulWidget {
+  final File imagePath;
+  final Status status;
+
+  const ConfirmStatusPage(
+      {super.key, required this.imagePath, required this.status});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _ConfirmStatusPageState createState() => _ConfirmStatusPageState();
+}
+
+class _ConfirmStatusPageState extends State<ConfirmStatusPage> {
+  String statusCaption = "";
+  final captionController = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Confirm Status"),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(30),
+              child: Image.file(widget.imagePath),
+            ),
+            Container(
+              width: 250,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.grey,
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: TextFormField(
+                controller: captionController,
+                decoration: const InputDecoration(
+                  hintText: "Add a status caption",
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: messageColor,
+        onPressed: () {
+          Status status = Status(
+              name: widget.status.name,
+              dateTime: widget.status.dateTime,
+              profilePic: widget.status.profilePic,
+              statusId: widget.status.statusId,
+              caption: captionController.text);
+          StatusClass().addPhoto(status);
+          Navigator.pop(context);
+        },
+        child: const Icon(
+          Icons.check,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}

@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sample_project2/colors.dart';
@@ -8,7 +7,6 @@ import 'package:sample_project2/features/call/controller/call_controller.dart';
 import 'package:sample_project2/features/call/screens/call_pickUp_screen.dart';
 import 'package:sample_project2/features/chat/screens/profile_page.dart';
 import 'package:sample_project2/features/chat/widgets/chat_list.dart';
-import 'package:sample_project2/features/landing/landing_screen.dart';
 import 'package:sample_project2/model/user_model.dart';
 
 import '../widgets/botton_chat_field.dart';
@@ -16,6 +14,7 @@ import '../widgets/botton_chat_field.dart';
 class MobileChatScreen extends ConsumerWidget {
   static const String routeName = '/mobile-chat-screen';
   final String name;
+
   final String uid;
   final bool isGroupChat;
   final String profilePic;
@@ -76,12 +75,29 @@ class MobileChatScreen extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 100,
-                      child: Text(
-                        name,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 80,
+                          child: Text(
+                            name,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 5),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'You',
+                                style: TextStyle(fontSize: 10),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
                     ),
                   ],
                 )
@@ -160,11 +176,89 @@ class MobileChatScreen extends ConsumerWidget {
             Row(
               children: [
                 IconButton(
-                  onPressed: () => makeCall(ref, context),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          backgroundColor: Colors.white,
+                          title: const Text(
+                            'Video call',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                          content: const Text(
+                              'This action will video call the current user!',
+                              style: TextStyle(color: Colors.black)),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('Cancel'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            Container(
+                              width: 70,
+                              height: 30,
+                              decoration: const BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  gradient: LinearGradient(
+                                      colors: [Colors.black, messageColor])),
+                              child: TextButton(
+                                child: const Center(
+                                    child: Text('Yes',
+                                        style: TextStyle(color: Colors.white))),
+                                onPressed: () => makeCall(ref, context),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
                   icon: const Icon(Icons.video_call),
                 ),
                 IconButton(
-                  onPressed: () => makeAudioCall(ref, context),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          backgroundColor: Colors.white,
+                          title: const Text(
+                            'Audio call',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                          content: const Text(
+                              'This action will Audio call the current user!',
+                              style: TextStyle(color: Colors.black)),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('Cancel'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            Container(
+                              width: 70,
+                              height: 30,
+                              decoration: const BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  gradient: LinearGradient(
+                                      colors: [Colors.black, messageColor])),
+                              child: TextButton(
+                                child: const Center(
+                                    child: Text('Yes',
+                                        style: TextStyle(color: Colors.white))),
+                                onPressed: () => makeAudioCall(ref, context),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
                   icon: const Icon(Icons.call),
                 ),
                 IconButton(

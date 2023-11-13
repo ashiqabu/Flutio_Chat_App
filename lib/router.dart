@@ -35,7 +35,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       final arguments = settings.arguments as Map<String, dynamic>;
       final name = arguments['name'];
       final uid = arguments['uid'];
-      final isGroupChat = arguments['isGroupChat'];
+      final isGroupChat = arguments['isGroupChat'] ?? false;
       final profilePic = arguments['profilePic'];
       return MaterialPageRoute(
           builder: (context) => MobileChatScreen(
@@ -44,13 +44,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
                 isGroupChat: isGroupChat,
                 profilePic: profilePic,
               ));
-
-    // case ConfirmStatusScreen.routeName:
-    //   final file = settings.arguments as File;
-    //   return MaterialPageRoute(
-    //       builder: (context) => ConfirmStatusScreen(
-    //             file: file,
-    //           ));
 
     case StatusScreen.routeName:
       final status = settings.arguments as Status;

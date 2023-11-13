@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sample_project2/features/call/controller/call_controller.dart';
+import 'package:sample_project2/features/call/repository/call_repository.dart';
 import 'package:sample_project2/features/call/screens/audio_call_screen.dart';
 import 'package:sample_project2/features/call/screens/call_screen.dart';
 import 'package:sample_project2/model/call.dart';
@@ -57,6 +58,8 @@ class CallPickUpScreen extends ConsumerWidget {
                       children: [
                         IconButton(
                             onPressed: () {
+                              ref.read(callRepositoryProvider).endAudioCall(
+                                  call.callId, call.receiverId, context);
                               Navigator.pop(context);
                             },
                             icon: const Icon(

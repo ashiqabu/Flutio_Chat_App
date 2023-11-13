@@ -26,6 +26,7 @@ class GroupRepository {
   void createGroup(BuildContext context, String name, File profilePic,
       List<Contact> selectedContact) async {
     try {
+      List<String> membersName = [];
       List<String> uids = [];
       for (int i = 0; i < selectedContact.length; i++) {
         var userCollection = await firestore
@@ -41,13 +42,24 @@ class GroupRepository {
         if (userCollection.docs.isNotEmpty && userCollection.docs[0].exists) {
           uids.add(userCollection.docs[0].data()['uid']);
         }
-   
       }
+
+      for (int i = 0; i < selectedContact.length; i++) {
+        var userCollection = await firestore
+            .collection('users')
+            .where('name', isEqualTo: selectedContact[i].name.first)
+            .get();
+        if (userCollection.docs.isNotEmpty && userCollection.docs[0].exists) {
+          membersName.add(userCollection.docs[0].data()['uid']);
+        }
+      }
+
       var groupId = const Uuid().v1();
       String profileUrl = await ref
           .read(commonFirebaseStorageRepositoryProvider)
           .storeFileToFirebase('group/$groupId', profilePic);
       model.Group group = model.Group(
+          membersName: [auth.currentUser!.uid, ...membersName],
           senderId: auth.currentUser!.uid,
           name: name,
           groupId: groupId,
@@ -61,7 +73,4 @@ class GroupRepository {
       showSnackBar(context: context, content: e.toString());
     }
   }
-   
-
-  
 }

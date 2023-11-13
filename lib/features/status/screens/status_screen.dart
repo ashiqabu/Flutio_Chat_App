@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sample_project2/colors.dart';
 import 'package:sample_project2/model/status_model.dart';
 import 'package:story_view/controller/story_controller.dart';
 import 'package:story_view/widgets/story_view.dart';
@@ -29,7 +31,7 @@ class _StatusScreenState extends State<StatusScreen> {
       StoryItem.pageImage(
         url: widget.status.profilePic,
         controller: storyController,
-        caption: 'Status Caption', // You can customize the caption
+        caption: widget.status.caption, // You can customize the caption
       ),
     );
   }
@@ -38,9 +40,13 @@ class _StatusScreenState extends State<StatusScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:const Text('Status Viewer'),
+        title: Text(
+            FirebaseAuth.instance.currentUser!.uid == widget.status.statusId
+                ? 'you'
+                : widget.status.name!),
       ),
       body: StoryView(
+        indicatorColor: messageColor,
         storyItems: storyItems,
         controller: storyController,
         onComplete: () {

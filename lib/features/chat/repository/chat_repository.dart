@@ -19,7 +19,6 @@ final chatRepositoryProvider = Provider((ref) => ChatRepository(
 class ChatRepository {
   final FirebaseFirestore firestore;
   final FirebaseAuth auth;
-
   ChatRepository({required this.firestore, required this.auth});
 
   Stream<List<ChatContact>> getChatContacts() {

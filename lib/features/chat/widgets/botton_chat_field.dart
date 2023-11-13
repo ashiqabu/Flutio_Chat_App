@@ -31,6 +31,7 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   bool isShowSendButton = false;
   bool isShowEmojiContainer = false;
   final TextEditingController _messageController = TextEditingController();
+  final formkey = GlobalKey<FormState>();
   FlutterSoundRecorder? soundRecorder;
   bool isRecorderInit = false;
   bool isRecording = false;
@@ -63,15 +64,18 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
 
   void sendTextMessage() async {
     if (isShowSendButton) {
-      ref.read(chatControllerProvider).sendTextMessage(
-            context,
-            _messageController.text.trim(),
-            widget.recieverUserId,
-            widget.isGroupChat,
-          );
-      setState(() {
-        _messageController.text = '';
-      });
+      String messageText = _messageController.text.trim();
+      if (messageText.isNotEmpty) {
+        ref.read(chatControllerProvider).sendTextMessage(
+              context,
+              _messageController.text.trim(),
+              widget.recieverUserId,
+              widget.isGroupChat,
+            );
+        setState(() {
+          _messageController.text = '';
+        });
+      }
     } else {
       var tempDir = await getTemporaryDirectory();
       var path = '${tempDir.path}/flutter_sound.aac';
@@ -163,7 +167,7 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
               child: TextFormField(
                 controller: _messageController,
                 onChanged: (val) {
-                  if (val.isNotEmpty) {
+                  if (val.trim().isNotEmpty) {
                     setState(() {
                       isShowSendButton = true;
                     });
@@ -224,8 +228,8 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
                   hintText: 'Type a message!',
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
-                      borderSide:
-                          const BorderSide(width: 0, style: BorderStyle.none)),
+                      borderSide: const BorderSide(
+                          width: 0, style: BorderStyle.none)),
                   contentPadding: const EdgeInsets.all(10),
                 ),
               ),

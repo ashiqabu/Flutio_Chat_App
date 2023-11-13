@@ -6,7 +6,9 @@ class Group {
   final String groupPic;
   final List<String> membersUid;
   final DateTime timeSent;
-  Group({
+  final List<String> membersName;
+  Group( {
+    required this.membersName,
     required this.senderId,
     required this.name,
     required this.groupId,
@@ -25,11 +27,13 @@ class Group {
       'groupPic': groupPic,
       'membersUid': membersUid,
       'timeSent': timeSent.millisecondsSinceEpoch,
+      'membersName':membersName,
     };
   }
 
   factory Group.fromMap(Map<String, dynamic> map) {
     return Group(
+      membersName: List<String>.from(map['membersName']),
       senderId: map['senderId'] ?? '',
       name: map['name'] ?? '',
       groupId: map['groupId'] ?? '',

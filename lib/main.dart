@@ -1,4 +1,3 @@
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,7 +5,7 @@ import 'package:sample_project2/common/widgets/error.dart';
 import 'package:sample_project2/features/auth/controller/auth_controller.dart';
 import 'package:sample_project2/firebase_options.dart';
 import 'package:sample_project2/router.dart';
-import 'package:sample_project2/mobile_screen_layout.dart';
+import 'package:sample_project2/splash_screen.dart';
 import 'colors.dart';
 import 'common/widgets/loader.dart';
 import 'features/landing/landing_screen.dart';
@@ -28,19 +27,19 @@ class MyApp extends ConsumerWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutio ChatApp',
         theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: backgroundColor,
-        appBarTheme: const AppBarTheme(color: appBarColor)),
+            scaffoldBackgroundColor: backgroundColor,
+            appBarTheme: const AppBarTheme(color: appBarColor)),
         onGenerateRoute: (settings) => generateRoute(settings),
         home: ref.watch(userDataAuthProvider).when(
             data: (user) {
               if (user == null) {
                 return const LandingScreen();
               }
-              return  const MobileScreenLayout();
-             },
+              return const SplashScreen();
+            },
             error: (err, trace) {
               return ErrorScreen(error: err.toString());
             },
-            loading: ()=>const Loader()));
+            loading: () => const Loader()));
   }
 }

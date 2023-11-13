@@ -1,12 +1,15 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sample_project2/colors.dart';
 import 'package:sample_project2/common/widgets/loader.dart';
 import 'package:sample_project2/features/chat/controller/chat_controller.dart';
 import 'package:sample_project2/features/chat/screens/mobile_chat_screen.dart';
 import 'package:sample_project2/model/chat_contact.dart';
+
+
+import '../../../common/core/constant.dart';
 
 class ContactsList extends ConsumerWidget {
   const ContactsList({super.key});
@@ -24,7 +27,26 @@ class ContactsList extends ConsumerWidget {
                 }
 
                 return snapshot.data!.isEmpty
-                    ? const Text("No Data")
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 49),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 4),
+                              Lottie.asset('animations/animation_lkknttjy.json',
+                                  width: 195, height: 195),
+                              kHeight(5),
+                              const Text(
+                                "  No chats yet !",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
                     : ListView.builder(
                         shrinkWrap: true,
                         itemCount: snapshot.data!.length,
@@ -35,7 +57,6 @@ class ContactsList extends ConsumerWidget {
                             children: [
                               InkWell(
                                 onTap: () {
-                                  log(chatContactData.profiilePic);
                                   Navigator.pushNamed(
                                     context,
                                     MobileChatScreen.routeName,
@@ -64,8 +85,7 @@ class ContactsList extends ConsumerWidget {
                                       ),
                                     ),
                                     leading: ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                          5), // Adjust the radius as needed
+                                      borderRadius: BorderRadius.circular(5),
                                       child: Container(
                                         decoration: BoxDecoration(
                                           border: Border.all(

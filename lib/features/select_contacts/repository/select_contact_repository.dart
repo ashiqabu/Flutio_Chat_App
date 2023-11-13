@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sample_project2/common/widgets/error.dart';
@@ -43,8 +44,10 @@ class SelectContactRepository {
         log(userData.phoneNumber);
         log(userData.uid);
         log(userData.name);
-        if ('+91$selectedPhoneNum' == userData.phoneNumber) {
+        if ('+91$selectedPhoneNum' == userData.phoneNumber ||
+            selectedPhoneNum == userData.phoneNumber) {
           isFound = true;
+
           // ignore: use_build_context_synchronously
           Navigator.pushNamed(context, MobileChatScreen.routeName, arguments: {
             'name': userData.name,
@@ -52,7 +55,7 @@ class SelectContactRepository {
             'groupId': userData.groupId,
             'profilePic': userData.profilePic,
             'isOnline': userData.isOnline,
-            "phoneNumber": userData.phoneNumber
+            "phoneNumber": userData.phoneNumber,
           });
         }
       }

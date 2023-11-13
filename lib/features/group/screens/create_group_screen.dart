@@ -30,9 +30,9 @@ class _CreateGroupState extends ConsumerState<CreateGroupScreen> {
           context,
           groupNameController.text.trim(),
           image!,
-          ref.read(selectedGroupContacts));
+          ref.read(selectedGroupsContacts));
       // ignore: deprecated_member_use
-      ref.read(selectedGroupContacts.state).update((state) => []);
+      ref.read(selectedGroupsContacts.state).update((state) => []);
       Navigator.pop(context);
     }
   }

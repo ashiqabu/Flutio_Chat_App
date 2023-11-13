@@ -67,7 +67,20 @@ class MyMessageCard extends ConsumerWidget {
                     ),
                     actions: <Widget>[
                       TextButton(
-                        child: const Text('Edit Message'),
+                        child: Container(
+                            height: 30,
+                            width: 60,
+                            decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                gradient: LinearGradient(
+                                    colors: [Colors.black, messageColor])),
+                            child: const Center(
+                              child: Text(
+                                'Edit',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            )),
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => EditMessageScreen(
@@ -85,7 +98,7 @@ class MyMessageCard extends ConsumerWidget {
                         },
                       ),
                       TextButton(
-                        child: const Text('Yes'),
+                        child: const Text('Delete'),
                         onPressed: () {
                           log(message);
 
@@ -103,91 +116,112 @@ class MyMessageCard extends ConsumerWidget {
                 },
               );
             },
-            child: Card(
-              elevation: 1,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(10),
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(0),
+            child:
+              Card(
+                elevation: 1,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
+                    bottomLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(0),
+                  ),
+                ),
+                color: messageColor,
+                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+                child: Stack(
+                  children: [
+                    Padding(
+                        padding: type == MessageEnum.text
+                            ? isEdited
+                                ? EdgeInsets.only(
+                                    left: message.length == 1 ||
+                                            message.length == 2 ||
+                                            message.length == 3
+                                        ? 60
+                                        : 30,
+                                    right: 40,
+                                    top: 5,
+                                    bottom: 20)
+                                : const EdgeInsets.only(
+                                    left: 25, right: 40, top: 5, bottom: 20)
+                            : const EdgeInsets.only(
+                                left: 5, right: 5, top: 5, bottom: 25),
+                        child: Column(
+                          children: [
+                            if (isReplying) ...[
+                              Text(
+                                'replay to $userName',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: const BoxDecoration(
+                                    color: senderMessageColor,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                                child: DisplayTextImageGif(
+                                  message: repliedText,
+                                  type: repliedMessageType,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                            ],
+                            DisplayTextImageGif(
+                              message: message,
+                              type: type,
+                            ),
+                          ],
+                        )),
+                    Positioned(
+                      bottom: 4,
+                      right: 10,
+                      child: Row(
+                        children: [
+                          isEdited == true
+                              ? Container(
+                                  decoration: const BoxDecoration(
+                                      color: Colors.black,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(2))),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(1),
+                                    child: Text(
+                                      'Edited',
+                                      style: TextStyle(
+                                          fontSize: 7, color: Colors.white),
+                                    ),
+                                  ),
+                                )
+                              : SizedBox(
+                                  width: isEdited ? 4 : 0,
+                                ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            date,
+                            style: const TextStyle(
+                                fontSize: 8, color: Colors.white),
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Icon(isSeen ? Icons.done_all : Icons.done,
+                              size: 20,
+                              color: isSeen
+                                  ? Colors.blue
+                                  : const Color.fromARGB(255, 139, 136, 136))
+                        ],
+                      ),
+                    )
+                  ],
                 ),
               ),
-              color: messageColor,
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
-              child: Stack(
-                children: [
-                  Padding(
-                      padding: type == MessageEnum.text
-                          ? const EdgeInsets.only(
-                              left: 50, right: 40, top: 5, bottom: 20)
-                          : const EdgeInsets.only(
-                              left: 5, right: 5, top: 5, bottom: 25),
-                      child: Column(
-                        children: [
-                          if (isReplying) ...[
-                            Text(
-                              'replay to $userName',
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: const BoxDecoration(
-                                  color: senderMessageColor,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5))),
-                              child: DisplayTextImageGif(
-                                
-                                message: repliedText,
-                                type: repliedMessageType,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                          ],
-                          DisplayTextImageGif(
-                            message: message,
-                            type: type,
-                             
-                            
-                          ),
-                        ],
-                      )),
-                  Positioned(
-                    bottom: 4,
-                    right: 10,
-                    child: Row(
-                      children: [
-                        isEdited == true
-                            ? const Text(
-                                'Edited',
-                                style:
-                                    TextStyle(fontSize: 8, color: Colors.white),
-                              )
-                            : const SizedBox(),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          date,
-                          style:
-                              const TextStyle(fontSize: 8, color: Colors.white),
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Icon(isSeen ? Icons.done_all : Icons.done,
-                            size: 20,
-                            color: isSeen
-                                ? Colors.blue
-                                : const Color.fromARGB(255, 139, 136, 136))
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
+              
+           
           ),
         ),
       ),

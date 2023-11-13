@@ -59,8 +59,10 @@ class _CallScreenState extends ConsumerState<CallScreen> {
                               widget.call.receiverId,
                               context,
                             );
+
+                        int count = 0;
                         // ignore: use_build_context_synchronously
-                        Navigator.pop(context);
+                        Navigator.of(context).popUntil((_) => count++ >= 2);
                       },
                       icon: const Icon(Icons.call_end),
                     ),

@@ -17,7 +17,7 @@ class SenderMessageCard extends ConsumerWidget {
   final String receiverId;
   final String messageId;
   final bool isGroupchat;
-   final bool isEdited;
+  final bool isEdited;
   const SenderMessageCard({
     super.key,
     required this.message,
@@ -30,7 +30,7 @@ class SenderMessageCard extends ConsumerWidget {
     required this.receiverId,
     required this.messageId,
     required this.isGroupchat,
-   required this.isEdited,
+    required this.isEdited,
   });
 
   @override
@@ -59,8 +59,18 @@ class SenderMessageCard extends ConsumerWidget {
               children: [
                 Padding(
                   padding: type == MessageEnum.text
-                      ? const EdgeInsets.only(
-                          left: 20, right: 30, top: 5, bottom: 20)
+                      ? isEdited
+                          ? EdgeInsets.only(
+                              left: message.length == 1 ||
+                                      message.length == 2 ||
+                                      message.length == 3
+                                  ? 40
+                                  : 20,
+                              right: 30,
+                              top: 5,
+                              bottom: 20)
+                          : const EdgeInsets.only(
+                              left: 15, right: 30, top: 5, bottom: 20)
                       : const EdgeInsets.only(
                           left: 5,
                           top: 5,
@@ -102,22 +112,34 @@ class SenderMessageCard extends ConsumerWidget {
                 ),
                 Positioned(
                   bottom: 5,
-                  right: 10,
+                  right: 1
+                  ,
                   child: Row(
                     children: [
-                      isEdited == true
-                          ? const Text(
-                              'Edited',
-                              style:
-                                  TextStyle(fontSize: 8, color: Colors.black),
-                            )
-                          : const SizedBox(),
-                          const SizedBox(width: 5,),
                       Text(
                         date,
                         style:
                             const TextStyle(fontSize: 8, color: Colors.black),
                       ),
+                      isEdited == true
+                          ? Container(
+                              decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(2)),
+                                color: Colors.black,
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.all(1),
+                                child: Text(
+                                  'Edited',
+                                  style: TextStyle(
+                                      fontSize: 7, color: Colors.white),
+                                ),
+                              ),
+                            )
+                          : SizedBox(
+                              width: isEdited ? 5 : 0,
+                            ),
                       const SizedBox(
                         width: 5,
                       ),

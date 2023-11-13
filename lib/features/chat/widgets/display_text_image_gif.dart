@@ -48,7 +48,8 @@ class DisplayTextImageGif extends StatelessWidget {
                     ));
               })
             : type == MessageEnum.video
-                ? VideoPlayerItem(videoUrl: message)
+                ?// VideoPlayerItem(videoUrl: message)
+                const Center(child: Text('not support this function'))
                 : type == MessageEnum.gif
                     ? CachedNetworkImage(imageUrl: message)
                     : GestureDetector(

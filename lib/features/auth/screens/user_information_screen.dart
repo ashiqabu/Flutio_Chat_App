@@ -83,5 +83,5 @@ class _UserInformatioScreenState extends ConsumerState<UserInformatioScreen> {
         ),
       )),
     );
-  }
+  } 
 }

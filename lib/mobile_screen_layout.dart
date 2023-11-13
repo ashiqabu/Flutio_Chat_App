@@ -1,10 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sample_project2/features/auth/controller/auth_controller.dart';
+import 'package:sample_project2/features/auth/screens/user_profile.dart';
 import 'package:sample_project2/features/chat/widgets/contactList_group.dart';
 import 'package:sample_project2/features/group/screens/create_group_screen.dart';
-import 'package:sample_project2/features/landing/landing_screen.dart';
 import 'package:sample_project2/features/select_contacts/screens/select_contact_screen.dart';
 import 'package:sample_project2/features/chat/widgets/contact_list.dart';
 import 'package:sample_project2/features/status/repository/status_repository.dart';
@@ -101,59 +100,14 @@ class _MobileScreenLayoutState extends ConsumerState<MobileScreenLayout>
                     ),
                     itemBuilder: (context) => [
                           PopupMenuItem(
-                            child: const Text('Create Group'),
-                            onTap: () => Future(() => Navigator.pushNamed(
-                                context, CreateGroupScreen.routeName)),
-                          ),
-                          PopupMenuItem(
-                            child: const Text('Logout'),
-                            onTap: () {
-                              showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text(
-                              'Signout!!!',
-                              style: TextStyle(color: Colors.red),
-                            ),
-                            content: const Text(
-                                'This action will log out you from personal chats, group chat, etc.'),
-                            actions: <Widget>[
-                              TextButton(
-                                child: const Text('Cancel'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              TextButton(
-                                child: const Text('Yes'),
-                                onPressed: () async {
-                                  FirebaseAuth.instance.signOut();
-
-                                  Navigator.pushReplacement(
+                              child: const Text('Profile'),
+                              onTap: () {
+                                Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          const LandingScreen(),
-                                    ),
-                                  );
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: SnackBar(
-                                          content: Text('SuccessFully Logout')),
-                                      behavior: SnackBarBehavior.floating,
-                                      backgroundColor: Colors.transparent,
-                                      elevation: 0,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                            },
-                          )
+                                        builder: (context) =>
+                                            const ProfilePage()));
+                              }),
                         ])
               ],
               bottom: TabBar(
@@ -175,9 +129,9 @@ class _MobileScreenLayoutState extends ConsumerState<MobileScreenLayout>
                     )
                   ]),
             ),
-            body: TabBarView(controller: tabcontroller, children: const [
-              ContactsList(),
-              ContactsListGroup(),
+            body: TabBarView(controller: tabcontroller, children: [
+              const ContactsList(),
+              const ContactsListGroup(),
               Expanded(child: StatusContactsScreen()),
             ]),
             floatingActionButton: FloatingActionButton(
@@ -187,19 +141,14 @@ class _MobileScreenLayoutState extends ConsumerState<MobileScreenLayout>
                   } else if (tabcontroller.index == 1) {
                     Navigator.pushNamed(context, CreateGroupScreen.routeName);
                   } else {
-                    StatusClass().getPhotos();
+                    StatusClass().getPhotos(context);
                   }
                 },
                 backgroundColor: messageColor,
-                child: tabcontroller.index == 0
-                    ? const Icon(
-                        Icons.comment,
-                        color: Colors.white,
-                      )
-                    : const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      )),
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                )),
           ),
         ));
   }
